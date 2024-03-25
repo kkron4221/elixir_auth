@@ -1,0 +1,44 @@
+<.header>
+  Listing User social auths
+  <:actions>
+    <.link patch={~p"/user_social_auths/new"}>
+      <.button>New User social auth</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="user_social_auths"
+  rows={@streams.user_social_auths}
+  row_click={fn {_id, user_social_auth} -> JS.navigate(~p"/user_social_auths/#{user_social_auth}") end}
+>
+  <:col :let={{_id, user_social_auth}} label="Provider"><%= user_social_auth.provider %></:col>
+  <:col :let={{_id, user_social_auth}} label="Identifier"><%= user_social_auth.identifier %></:col>
+  <:col :let={{_id, user_social_auth}} label="Token"><%= user_social_auth.token %></:col>
+  <:col :let={{_id, user_social_auth}} label="Display name"><%= user_social_auth.display_name %></:col>
+  <:action :let={{_id, user_social_auth}}>
+    <div class="sr-only">
+      <.link navigate={~p"/user_social_auths/#{user_social_auth}"}>Show</.link>
+    </div>
+    <.link patch={~p"/user_social_auths/#{user_social_auth}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={{id, user_social_auth}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: user_social_auth.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal :if={@live_action in [:new, :edit]} id="user_social_auth-modal" show on_cancel={JS.patch(~p"/user_social_auths")}>
+  <.live_component
+    module={BrightWeb.UserSocialAuthLive.FormComponent}
+    id={@user_social_auth.id || :new}
+    title={@page_title}
+    action={@live_action}
+    user_social_auth={@user_social_auth}
+    patch={~p"/user_social_auths"}
+  />
+</.modal>

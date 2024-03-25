@@ -1,0 +1,29 @@
+<.header>
+  User social auth <%= @user_social_auth.id %>
+  <:subtitle>This is a user_social_auth record from your database.</:subtitle>
+  <:actions>
+    <.link patch={~p"/user_social_auths/#{@user_social_auth}/show/edit"} phx-click={JS.push_focus()}>
+      <.button>Edit user_social_auth</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Provider"><%= @user_social_auth.provider %></:item>
+  <:item title="Identifier"><%= @user_social_auth.identifier %></:item>
+  <:item title="Token"><%= @user_social_auth.token %></:item>
+  <:item title="Display name"><%= @user_social_auth.display_name %></:item>
+</.list>
+
+<.back navigate={~p"/user_social_auths"}>Back to user_social_auths</.back>
+
+<.modal :if={@live_action == :edit} id="user_social_auth-modal" show on_cancel={JS.patch(~p"/user_social_auths/#{@user_social_auth}")}>
+  <.live_component
+    module={BrightWeb.UserSocialAuthLive.FormComponent}
+    id={@user_social_auth.id}
+    title={@page_title}
+    action={@live_action}
+    user_social_auth={@user_social_auth}
+    patch={~p"/user_social_auths/#{@user_social_auth}"}
+  />
+</.modal>
